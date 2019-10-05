@@ -7,7 +7,7 @@ class FileDirectoryChecker
 
     //properties
     private $directory;
-    private $file = '';
+    private $file = ''; //accepts resource from opendir()
     private $holder = [];
 
     public function __construct($directory)
@@ -19,29 +19,36 @@ class FileDirectoryChecker
 
     private function checkFileInDirectory()
     {
-        if (!is_dir($this->directory)) {
 
-            return false;
-        }
+            if (!is_dir($this->directory)) {
 
-        return true;
+                return false;
+
+            }
+
+            return true;
 
     }
 
     private function openFileDirectory()
     {
 
-        if (!$this->checkFileInDirectory()) {
-            //push files to error
-            echo 'No Files in Directory';
-        }
+        //Check Directory and open directory
+        try {
 
-        //open directory
-        if ($this->file = opendir($this->directory)) {
+            if (!$this->checkFileInDirectory()) {
 
+                throw new Exception('Folder cannot be found');
+            }
+
+
+            $this->file = opendir($this->directory);
             $this->readFilesInDirectory();
 
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
+
 
     }
 
@@ -53,7 +60,11 @@ class FileDirectoryChecker
         while (($file = readdir($this->file)) !== false) {
 
             if ($file != '.' && $file != '..') {
-                array_push($this->holder, $file);
+                //$fileType = filetype($file);
+                $fileType = pathinfo($file);
+                //array_push($this->holder, $file);
+                array_push($this->holder, ['file_name' => $fileType['basename'], 'file_type' => $fileType['extension']]);
+
             }
 
         }
@@ -61,8 +72,10 @@ class FileDirectoryChecker
         //TODO decide - not sure whether to use a trait or use composition??
         //$jsonObject = new JSONOutput();
         //var_dump($jsonObject->outputFileAsJSON($this->holder));
-        //$json = JSONConverter::convertToJSON($this->holder);
+        $json = JSONConverter::convertToJSON($this->holder);
 
+        //var_dump($this->holder);
+        var_dump($json);
 
     }
 
