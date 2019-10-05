@@ -1,7 +1,10 @@
 <?php
 include __DIR__ . '/JSONOutput.php';
+include 'app/Traits/JSONConverter.php';
 class FileDirectoryChecker
 {
+    use JSONConverter;
+
     //properties
     private $directory;
     private $file = '';
@@ -45,6 +48,8 @@ class FileDirectoryChecker
 
     private function readFilesInDirectory()
     {
+
+        //reads files from directory path
         while (($file = readdir($this->file)) !== false) {
 
             if ($file != '.' && $file != '..') {
@@ -53,10 +58,11 @@ class FileDirectoryChecker
 
         }
 
+        //TODO decide - not sure whether to use a trait or use composition??
+        //$jsonObject = new JSONOutput();
+        //var_dump($jsonObject->outputFileAsJSON($this->holder));
+        //$json = JSONConverter::convertToJSON($this->holder);
 
-        $jsonObject = new JSONOutput();
-
-        $jsonObject->outputFileAsJSON($this->holder);
 
     }
 
