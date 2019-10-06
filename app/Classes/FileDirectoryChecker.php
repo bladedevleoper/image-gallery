@@ -53,33 +53,30 @@ class FileDirectoryChecker
     }
 
 
-    private function readFilesInDirectory()
+    private final function readFilesInDirectory()
     {
-
+        //look at this 'file_type' => $fileType['extension']
         //reads files from directory path
         while (($file = readdir($this->file)) !== false) {
 
             if ($file != '.' && $file != '..') {
-                //$fileType = filetype($file);
                 $fileType = pathinfo($file);
+                $dir = '/images/';
                 //array_push($this->holder, $file);
-                array_push($this->holder, ['file_name' => $fileType['basename'], 'file_type' => $fileType['extension']]);
+                array_push($this->holder, ['file_name' => $fileType['basename'], 'file_type' => $fileType['extension'], 'path' => $dir]);
 
             }
 
         }
 
         //TODO decide - not sure whether to use a trait or use composition??
-        //$jsonObject = new JSONOutput();
-        //var_dump($jsonObject->outputFileAsJSON($this->holder));
-        $json = JSONConverter::convertToJSON($this->holder);
+        $jsonObject = new JSONOutput();
+        $json = $jsonObject->outputFileAsJSON($this->holder);
+        //$json = JSONConverter::convertToJSON($this->holder);
 
         //var_dump($this->holder);
         var_dump($json);
-
     }
-
-
 
 
 }
